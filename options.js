@@ -1,5 +1,3 @@
-document.write("options.js loading<br />");
-
 let dummy_log_cleared;
 
 function log(s)
@@ -120,5 +118,3 @@ function onDOMContentLoaded()
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded);
 document.querySelector('form').addEventListener('submit', onSubmit);
 browser.runtime.onMessage.addListener(onMessage);
-
-document.write("options.js loaded<br />");
