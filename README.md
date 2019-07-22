@@ -10,4 +10,4 @@ In such cases you can set this option to avoid preflight request.
 - **Save**: Save and apply settings.
 - **Apply**: Apply settings. (doesn't save settings).
 - **Get Status**: get current status and applied settings.
-- **On** enables this addon. **Off** disables this addon. Or clicking Lock icon in toolbar toggles enalbe/disable. 
+- **On** enables this addon. **Off** disables this addon. Or clicking Lock icon in toolbar toggles enable/disable. 
