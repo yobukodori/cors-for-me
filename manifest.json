@@ -1,9 +1,13 @@
 {
 	"manifest_version" : 2,
 	"name": "CORS for Me",
-	"version": "0.1.4",
+	"version": "0.2.0",
 	"author": "yobukodori",
 	"description": "Allow cross-domain xhr request by adding CORS headers to response.",
+
+	"icons": {
+		"48": "icons/icon-48.png"
+	},
 
 	"permissions" : [
 		"webRequest",
@@ -19,7 +23,7 @@
 	"browser_action" : {
 		"default_title" : "CORS for Me",
 		"default_icon"  : {
-			"48" : "icons/button-48.png"
+			"48" : "icons/button-48-off.png"
 		}
 	},
 

@@ -2,19 +2,20 @@ let dummy_log_cleared;
 
 function log(s)
 {
-	let style, html = s.replace(/</g, "&lt;");
+	let e = document.createElement("span");
+	e.innerText = s;
+	e.appendChild(document.createElement("br"));
 	if (/^error:/i.test(s))
-		style = "background-color:pink;font-weight:bold;";
+		e.className = "error";
 	else if (/^warning:/i.test(s))
-		style = "background-color:yellow;";
-	if (style)
-		html = '<span style="' + style + '">' + html + "</span>";
-	let e = document.querySelector('#log');
+		e.className = "warning";
+	let log = document.querySelector('#log');
 	if (! dummy_log_cleared){
-		e.innerHTML = "";
+		log.innerHTML = "";
+		log.appendChild(document.createElement("span"));
 		dummy_log_cleared = true;
 	}
-	e.innerHTML =  (new Date()).toLocaleString()+" "+html + "<br/>" + e.innerHTML;
+	log.insertBefore(e, log.firstElementChild);
 }
 
 function applySettings(fSave)
@@ -56,7 +57,7 @@ function onStatusChange(fEnabled)
 {
 	let e = document.querySelector('#toggle');
 	e.className = (fEnabled ? "on" : "off") + (g_is_android ? " mobile" : "");
-	e.innerHTML = fEnabled ? "Off" : "On";
+	e.innerText = fEnabled ? "On" : "Off";
 }
 
 function onMessage(m, sender, sendResponse)
