@@ -1,7 +1,8 @@
 let my = {
-	debug: true,
 	os : "n/a", // mac|win|android|cros|linux|openbsd
+	defaultTitle: "CORS for Me",
 	enabled : false,
+	debug: false,
 	requests : {},
 	appliedUrls: "",
 	filterUrls: [],
@@ -13,6 +14,10 @@ let my = {
 	//====================================================
 	init : function(platformInfo)
 	{
+		let man = browser.runtime.getManifest();
+		if (man.browser_action && man.browser_action.default_title)
+			my.defaultTitle = man.browser_action.default_title;
+
 		my.os = platformInfo.os;
 
 		browser.browserAction.onClicked.addListener(function(){
@@ -123,12 +128,10 @@ let my = {
 	updateButton : function()
 	{
 		let buttonStatus = my.enabled ? 'on' : 'off';
-		if (my.os == "android"){
-			//browser.browserAction.setTitle('CORS for Me: '+buttonStatus);
-		}
-		else {
+		if (browser.browserAction.setIcon !== undefined)
 			browser.browserAction.setIcon({path:{48:'icons/button-48-'+buttonStatus+'.png'}});
-		}
+		if (browser.browserAction.setTitle !== undefined)
+			browser.browserAction.setTitle({title: my.defaultTitle + " ("+buttonStatus+")"});
 	},
 	//====================================================
 	onBeforeSendHeaders : function(request)

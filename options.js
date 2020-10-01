@@ -57,7 +57,7 @@ function onStatusChange(fEnabled)
 {
 	let e = document.querySelector('#toggle');
 	e.className = (fEnabled ? "on" : "off") + (g_is_android ? " mobile" : "");
-	e.innerText = fEnabled ? "On" : "Off";
+	e.innerText = fEnabled ? "Off (Now On)" : "On (Now Off)";
 }
 
 function onMessage(m, sender, sendResponse)
