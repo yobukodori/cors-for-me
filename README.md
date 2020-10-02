@@ -1,4 +1,4 @@
-# cors-for-me - firefox extension
+# CORS for Me - firefox extension
 ## Allows cross-domain xhr request by adding CORS headers to response.
 ## HTTPレスポンスにCORSヘッダを追加してクロスドメインのxhrリクエストを許可するFirefox拡張機能
 ### Usage
@@ -10,4 +10,4 @@ In such cases you can set this option to avoid preflight request.
 - **Save**: Save and apply settings.
 - **Apply**: Apply settings. (doesn't save settings).
 - **Get Status**: get current status and applied settings.
-- **On** enables this addon. **Off** disables this addon. Or clicking Lock icon in toolbar toggles enable/disable. 
+- **On** enables this addon. **Off** disables this addon. Or clicking the crossing arrows icon in toolbar toggles enable/disable. 
