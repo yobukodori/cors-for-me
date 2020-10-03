@@ -1,7 +1,7 @@
 {
 	"manifest_version" : 2,
 	"name": "CORS for Me",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"author": "yobukodori",
 	"description": "Allow cross-domain xhr request by adding CORS headers to response.",
 

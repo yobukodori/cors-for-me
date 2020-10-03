@@ -21,6 +21,7 @@ function log(s)
 function applySettings(fSave)
 {
 	let appliedUrls = document.querySelector('#appliedUrls').value;
+	appliedUrls = appliedUrls.trim().replace(/\s+/g, ' ');
 	let error, urls =  [];
 	if (appliedUrls){
 		urls =  parseUrls(appliedUrls);
@@ -30,6 +31,7 @@ function applySettings(fSave)
 		}
 	}
 	let userAgent = document.querySelector('#userAgent').value;
+	userAgent = userAgent.trim().replace(/\s+/g, ' ');
 	let pref = {
 		enableAtStartup : document.querySelector('#enableAtStartup').checked,
 		printDebugInfo : document.querySelector('#printDebugInfo').checked,
@@ -83,7 +85,6 @@ function getBackgroundStatus()
 
 function onDOMContentLoaded()
 {
-	//document.querySelector("#log").innerHTML = "";
 	getBackgroundStatus();
 	document.querySelector('#getStatus').onclick = function (){
 		getBackgroundStatus();
@@ -95,12 +96,9 @@ function onDOMContentLoaded()
 		browser.runtime.sendMessage({type: "toggle"});
 	};
 	if (g_is_android){
-		let e = document.querySelectorAll("form, form input, form button, #log");
+		let e = document.querySelectorAll("form, form input, form textarea, form button, #log");
 		for (let i = 0 ; i < e.length ; i++){
-			let cn = e[i].className;
-			if (typeof cn !== "string")
-				cn = "";
-			e[i].className = cn + " mobile";
+			e[i].classList.add("mobile");
 		}
 	}
 	
