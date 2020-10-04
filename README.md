@@ -1,6 +1,7 @@
 # CORS for Me - firefox extension
 ## Allows cross-domain xhr request by adding CORS headers to response.
 ## HTTPレスポンスにCORSヘッダを追加してクロスドメインのxhrリクエストを許可するFirefox拡張機能
+### CORS for Me is available on [AMO](https://addons.mozilla.org/ja/firefox/addon/cors-for-me/).
 ### Usage
 ![screenshot](https://yobukodori.github.io/freedom/image/cors-for-me-screenshot.jpg)
 - **Enable at startup**: Enable this feature when the browser is started.  
