@@ -70,12 +70,22 @@ let my = {
 				type: "status",
 				"status": {
 					enabled: my.enabled,
+					debug: my.debug,
 					appliedUrls: my.appliedUrls,
+					userAgent: my.userAgent,
 					filterUrls: my.filterUrls,
 					requestCounter: my.requestCounter,
 					appliedCounter: my.appliedCounter,
 					uaCounter: my.uaCounter
 				}
+			});
+		}
+		else if (message.type === "syncAppliedData"){
+			browser.runtime.sendMessage({
+				type: "syncAppliedData",
+				debug: my.debug,
+				appliedUrls: my.appliedUrls,
+				userAgent: my.userAgent
 			});
 		}
 		else if (message.type === "updateSettings"){
