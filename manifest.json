@@ -1,7 +1,7 @@
 {
 	"manifest_version" : 2,
 	"name": "CORS for Me",
-	"version": "0.3.4",
+	"version": "0.3.5",
 	"author": "yobukodori",
 	"description": "Allow cross-domain xhr request by adding CORS headers to response.",
 
@@ -22,6 +22,7 @@
 
 	"browser_action" : {
 		"default_title" : "CORS for Me",
+		"default_popup": "popup.html",
 		"default_icon"  : {
 			"48" : "icons/button-48-off.png"
 		}
@@ -32,8 +33,6 @@
 		"browser_style": true
 	},
 	
-	// The storage API will not work with a temporary addon ID. 
-	// Please add an explicit addon ID to your manifest.
 	"applications": {
 		"gecko": {
 			"id": "cors-for-me@yobukodori"
