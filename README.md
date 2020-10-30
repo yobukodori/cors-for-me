@@ -13,4 +13,4 @@ In such cases you can set this option to avoid preflight request.
 - **Save**: Save and apply settings.
 - **Apply**: Apply settings. (doesn't save settings).
 - **Get Status**: get current status and applied settings.
-- **On** enables this feature. **Off** disables this feature. Or clicking the crossing arrows icon in toolbar toggles enable/disable. 
+- **On** enables this feature. **Off** disables this feature. Or clicking the crossing arrows icon in toolbar will bring up a pop-up menu where you can turn it on/off and open the settings page.  
