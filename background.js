@@ -1,6 +1,8 @@
 let my = {
 	os : "n/a", // mac|win|android|cros|linux|openbsd
 	defaultTitle: "CORS for Me",
+	initialized: null,
+	enableAtStartup: false,
 	enabled : false,
 	debug: false,
 	requests : {},
@@ -14,27 +16,37 @@ let my = {
 	//====================================================
 	init : function(platformInfo)
 	{
-		let man = browser.runtime.getManifest();
-		if (man.browser_action && man.browser_action.default_title)
-			my.defaultTitle = man.browser_action.default_title;
+		my.initialized = new Promise((resolve, reject)=>{
+			try {
+				let man = browser.runtime.getManifest();
+				if (man.browser_action && man.browser_action.default_title)
+					my.defaultTitle = man.browser_action.default_title;
+				my.os = platformInfo.os;
 
-		my.os = platformInfo.os;
+				browser.browserAction.onClicked.addListener(function(){
+					my.toggle();
+				});
+				my.updateButton();
+				browser.runtime.onMessage.addListener(my.onMessage);
 
-		browser.browserAction.onClicked.addListener(function(){
-			my.toggle();
+				browser.storage.sync.get(["enableAtStartup","printDebugInfo","appliedUrls","userAgent"])
+				.then((pref) => {
+					my.updateSettings(pref, pref.enableAtStartup);
+					resolve();
+				})
+				.catch(err=>{
+					reject(err);
+				});
+			}
+			catch(e){
+				reject(e.message);
+			}
 		});
-
-		let prefs = browser.storage.sync.get(
-							["enableAtStartup","printDebugInfo","appliedUrls","userAgent"]);
-		prefs.then((pref) => {my.updateSettings(pref, pref.enableAtStartup);});
-
-		my.updateButton();
-		
-		browser.runtime.onMessage.addListener(my.onMessage);
 	},
 	//====================================================
 	updateSettings : function(pref, fEnable)
 	{
+		my.enableAtStartup = pref.enableAtStartup || false;
 		my.debug = pref.printDebugInfo || false;
 		if (typeof pref.userAgent === "string"){
 			if (pref.userAgent !== my.userAgent){
@@ -80,13 +92,28 @@ let my = {
 				}
 			});
 		}
-		else if (message.type === "syncAppliedData"){
-			browser.runtime.sendMessage({
-				type: "syncAppliedData",
-				debug: my.debug,
-				appliedUrls: my.appliedUrls,
-				userAgent: my.userAgent
-			});
+		else if (message.type === "getSettings"){
+			if (my.initialized){
+				my.initialized.then(()=>{
+					sendResponse({
+						enableAtStartup: my.enableAtStartup,
+						printDebugInfo: my.debug,
+						appliedUrls: my.appliedUrls,
+						userAgent: my.userAgent
+					});
+				})
+				.catch(err=>{
+					sendResponse({
+						error: err,
+					});
+				});
+				return true;
+			}
+			else {
+				sendResponse({
+					error: "background.js has not been initialized yet.",
+				});
+			}
 		}
 		else if (message.type === "updateSettings"){
 			my.updateSettings(message.pref);
@@ -97,6 +124,7 @@ let my = {
 		else if (message.type === "getEnabled"){
 			sendResponse({
 				enabled: my.enabled,
+				canEnable: my.filterUrls.length > 0,
 			});
 		}
 	},
@@ -110,6 +138,7 @@ let my = {
 			if (my.enabled = ! my.enabled){
 				if (my.filterUrls.length === 0){
 					my.enabled = false;
+					my.log("Error: No URL applied");
 					return;
 				}
 			}
@@ -137,7 +166,7 @@ let my = {
 				my.onHeadersReceived
 			);
 		}
-		browser.runtime.sendMessage({type:"statusChange", enabled:my.enabled });
+		browser.runtime.sendMessage({type:"statusChange", enabled:my.enabled }).catch(e=>{});
 	},
 	//====================================================
 	updateButton : function()

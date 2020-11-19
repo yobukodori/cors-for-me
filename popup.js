@@ -47,6 +47,10 @@ function onDOMContentLoaded(platformInfo){
 	.then(status=>{
 		let checkbox = document.querySelector('#enable-future');
 		checkbox.checked = status.enabled;
+		if (! status.canEnable){
+			checkbox.disabled = true;
+			document.querySelector('label[for="enable-future"]').classList.add("gray");
+		}
 	})
 	.catch(error);
 }

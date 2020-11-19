@@ -1,3 +1,23 @@
+function alert(msg){
+	const id = "alert";
+	let e = document.getElementById(id);
+	if(! e){
+		e = document.createElement("div");
+		e.id = id;
+		document.addEventListener("click", ev=> e.remove());
+		document.body.appendChild(e);
+	}
+	let m = document.createElement("div");
+	m.classList.add("message");
+	msg.split("\n").forEach((line,i) =>{
+		if (i > 0){ m.appendChild(document.createElement("br")); }
+		let span = document.createElement("span");
+		span.appendChild(document.createTextNode(line));
+		m.appendChild(span);
+	});
+	e.appendChild(m);
+}
+
 let dummy_log_cleared;
 
 function log(s)
@@ -86,11 +106,6 @@ function onMessage(m, sender, sendResponse)
 		);
 		onStatusChange(s.enabled);
 	}
-	else if (m.type === "syncAppliedData"){
-        document.querySelector('#printDebugInfo').checked = m.debug;
-		document.querySelector('#appliedUrls').value = m.appliedUrls;
-		document.querySelector('#userAgent').value = m.userAgent;
-	}
 	else if (m.type === "statusChange"){
 		onStatusChange(m.enabled);
 		log(m.enabled ? "Enabled" : "Disabled");
@@ -99,7 +114,8 @@ function onMessage(m, sender, sendResponse)
 
 function getBackgroundStatus()
 {
-	browser.runtime.sendMessage({type: "getStatus"});
+	browser.runtime.sendMessage({type: "getStatus"})
+	.catch(err=>log("Error on sendMessage: " + err));
 }
 
 function onDOMContentLoaded()
@@ -123,12 +139,21 @@ function onDOMContentLoaded()
 		e[i].classList.add(g_is_pc ? "pc" : "mobile");
 	}
 	
-    let prefs = browser.storage.sync.get(
-		['enableAtStartup','printDebugInfo','appliedUrls','userAgent']);
-    prefs.then((pref) => {
-        document.querySelector('#enableAtStartup').checked = pref.enableAtStartup || false;
-    });
-	browser.runtime.sendMessage({type: "syncAppliedData"});
+	browser.runtime.sendMessage({type: "getSettings"})
+	.then(v=>{
+		if (v.error){
+			alert("Error on getSettings: " + v.error);
+		}
+		else {
+			document.querySelector('#enableAtStartup').checked = v.enableAtStartup;
+			document.querySelector('#printDebugInfo').checked = v.printDebugInfo;
+			document.querySelector('#appliedUrls').value = v.appliedUrls;
+			document.querySelector('#userAgent').value = v.userAgent;
+		}
+	})
+	.catch(err=>{
+		alert("Error on sendMessage('getSettings'): " + err);
+	});
 }
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded);
