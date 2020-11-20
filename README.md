@@ -6,7 +6,7 @@
 ![screenshot](https://yobukodori.github.io/freedom/image/cors-for-me-screenshot.jpg)
 - **Enable at startup**: Enable this feature when the browser is started.  
 - **Print debug info**:  Output debug information at the bottom of the Options tab.  
-- **Applied URLs**: Comma-Separated target [URL patterns](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns).
+- **Applied URLs**: Comma-Separated target [URL patterns](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns). Allow cross-domain xhr requests to these sites.
 - **User-Agent**: (Optional). Sets this value to User-Agent header.  
 Setting user-agent header in xhr causes preflight OPTIONS request. And some sites deny the request. 
 In such cases you can set this option to avoid preflight request.
