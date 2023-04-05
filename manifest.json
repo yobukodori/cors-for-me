@@ -1,7 +1,7 @@
 {
 	"manifest_version" : 2,
 	"name": "CORS for Me",
-	"version": "0.3.6",
+	"version": "0.3.7",
 	"author": "yobukodori",
 	"description": "Allow cross-domain xhr request by adding CORS headers to response.",
 
@@ -30,10 +30,11 @@
 
 	"options_ui" : {
 		"page": "options.html",
-		"browser_style": true
+		"browser_style": true,
+		"open_in_tab":true
 	},
 	
-	"applications": {
+	"browser_specific_settings": {
 		"gecko": {
 			"id": "cors-for-me@yobukodori"
 		}

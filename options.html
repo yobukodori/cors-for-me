@@ -9,6 +9,10 @@
 <body>
 	<div class="main">
 		<div>
+			<span class="appInfo">
+				<img id="appIcon" src="icons/icon-48.png">
+				<span id="appName">(app name)</span><span id="appVer">(app version)</span>
+			</span>
 			<input type="checkbox" id="enableAtStartup">
 			<label for="enableAtStartup">Enable at startup</label>
             <input type="checkbox" id="printDebugInfo">
@@ -16,12 +20,12 @@
 		</div>
 		<div class="text-box">
 				Applied URLs (Comma-Separated <a href="https://developer.mozilla.org/Add-ons/WebExtensions/Match_patterns">URL patterns</a>)<br/>
-				<textarea id="appliedUrls" rows="3"
+				<textarea id="appliedUrls" rows="15"
 					placeholder="*://target.com/*,*://more-target.com/*"></textarea>
 		</div>
 		<div class="text-box">
 				User-Agent (Optional)<br/>
-				<textarea id="userAgent" rows="3"></textarea>
+				<textarea id="userAgent" rows="5"></textarea>
 		</div>
 		<div class="button-area">
 			<button type="button" id="save">Save</button>
@@ -29,8 +33,7 @@
 			| <button type="button" id="getStatus">Get Status</button>
 			<button type="button" id="toggle">Toggle On/Off</button>
 		</div>
-		<div id="log">dummy for<br/><br/><br/><br/><br/><br/>
-			<br/><br/><br/>android</div>
+		<div id="log">dummy for<br/><br/><br/><br/>android</div>
 	</div>
 	<script src="util.js"></script>
 	<script src="options.js"></script>

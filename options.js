@@ -4,7 +4,12 @@ function alert(msg){
 	if(! e){
 		e = document.createElement("div");
 		e.id = id;
-		document.addEventListener("click", ev=> e.remove());
+		setTimeout(function(e){
+			document.addEventListener("click", function handler(ev){
+				document.removeEventListener("click", handler);
+				e.remove(); 
+			});
+		}, 0, e);
 		document.body.appendChild(e);
 	}
 	let m = document.createElement("div");
@@ -120,6 +125,12 @@ function getBackgroundStatus()
 
 function onDOMContentLoaded()
 {
+	let man = browser.runtime.getManifest(), 
+		appName = man.name, // man.browser_action.default_title, 
+		appVer = "v." + man.version;
+	document.querySelector('#appName').textContent = appName;
+	document.querySelector('#appVer').textContent = appVer;
+
 	getBackgroundStatus();
 	document.querySelector('#save').addEventListener('click', ev=>{
 		applySettings(true);

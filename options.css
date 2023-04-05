@@ -13,12 +13,24 @@ body{
 	background-color: #f7f7f7;
 }
 
-.main.pc {
-	font-size: large;
+body.pc {
+	/* font-size: large; */
 }
 
-.main.mobile {
+body.mobile {
 	font-size: 15px;
+}
+
+.appInfo {
+	font-weight: bold;
+}
+
+#appIcon {
+	height: 1.2em;
+}
+
+#appVer {
+	margin-left: 0.5em;
 }
 
 textarea {
@@ -30,6 +42,10 @@ button {
 	padding: 0.1em 0.5em;
 }
 
+input[type="text"] {
+	font-size: inherit;
+}
+
 .text-box {
 	border-style: solid;
 	padding: 0px 5px 5px;
@@ -37,7 +53,7 @@ button {
 }
 
 #appliedUrls, #userAgent {
-	width: 100%;
+	width: 99%;
 	word-break: break-all;
 }
 
