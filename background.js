@@ -2,6 +2,7 @@ let my = {
 	os : "n/a", // mac|win|android|cros|linux|openbsd
 	defaultTitle: "CORS for Me",
 	initialized: null,
+	settings: {},
 	enableAtStartup: false,
 	enabled : false,
 	debug: false,
@@ -29,7 +30,7 @@ let my = {
 				my.updateButton();
 				browser.runtime.onMessage.addListener(my.onMessage);
 
-				browser.storage.sync.get(["enableAtStartup","printDebugInfo","appliedUrls","userAgent"])
+				browser.storage.sync.get(["enableAtStartup","printDebugInfo","colorScheme", "appliedUrls","userAgent"])
 				.then((pref) => {
 					my.updateSettings(pref, pref.enableAtStartup);
 					resolve();
@@ -46,6 +47,7 @@ let my = {
 	//====================================================
 	updateSettings : function(pref, fEnable)
 	{
+		my.settings = pref;
 		my.enableAtStartup = pref.enableAtStartup || false;
 		my.debug = pref.printDebugInfo || false;
 		if (typeof pref.userAgent === "string"){
@@ -98,6 +100,7 @@ let my = {
 					sendResponse({
 						enableAtStartup: my.enableAtStartup,
 						printDebugInfo: my.debug,
+						colorScheme: my.settings.colorScheme,
 						appliedUrls: my.appliedUrls,
 						userAgent: my.userAgent
 					});

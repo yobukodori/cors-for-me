@@ -53,6 +53,19 @@ function onDOMContentLoaded(platformInfo){
 		}
 	})
 	.catch(error);
+
+	browser.runtime.sendMessage({type: "getSettings"})
+	.then(v=>{
+		if (v.error){
+			error(new Error(v.error));
+		}
+		else {
+			let colorScheme = ["light", "dark"].includes(v.colorScheme) ? v.colorScheme : "auto";
+			setupColorScheme(colorScheme);
+			window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ev=> onPrefersColorSchemeDarkChange(ev));
+		}
+	})
+	.catch(error);
 }
 
 document.addEventListener('DOMContentLoaded', ev=>{

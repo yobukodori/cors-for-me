@@ -23,6 +23,13 @@ function alert(msg){
 	e.appendChild(m);
 }
 
+function clearLog()
+{
+	let log = document.querySelector('#log');
+	log.innerHTML = "";
+	log.appendChild(document.createElement("span"));
+}
+
 let dummy_log_cleared;
 
 function log(s)
@@ -36,7 +43,7 @@ function log(s)
 	if (! (s = s.replace(/\s+$/, ""))){
 		return;
 	}
-	let className = /^error\b/i.test(s) ? "error" : /^warning\b/i.test(s) ? "warning" : "";
+	let className = /^[a-z]*error\b/i.test(s) ? "error" : /^warning\b/i.test(s) ? "warning" : "";
 	let a = s.split("\n");
 	for (let i = a.length - 1 ; i >= 0 ; i--){
 		let s = a[i].replace(/\s+$/, "");
@@ -70,6 +77,7 @@ function applySettings(fSave)
 	let pref = {
 		enableAtStartup : document.querySelector('#enableAtStartup').checked,
 		printDebugInfo : document.querySelector('#printDebugInfo').checked,
+		colorScheme: document.querySelector('#colorScheme').value,
 		appliedUrls : appliedUrls,
 		userAgent: userAgent
 	};
@@ -123,6 +131,16 @@ function getBackgroundStatus()
 	.catch(err=>log("Error on sendMessage: " + err));
 }
 
+function setupSettings(v){
+	let colorScheme = ["light", "dark"].includes(v.colorScheme) ? v.colorScheme : "auto";
+	document.querySelector('#colorScheme').value = colorScheme;
+	setupColorScheme(colorScheme);
+	document.querySelector('#enableAtStartup').checked = !! v.enableAtStartup;
+	document.querySelector('#printDebugInfo').checked = !! v.printDebugInfo;
+	document.querySelector('#appliedUrls').value = v.appliedUrls || "";
+	document.querySelector('#userAgent').value = v.userAgent || "";
+}
+
 function onDOMContentLoaded()
 {
 	let man = browser.runtime.getManifest(), 
@@ -130,6 +148,10 @@ function onDOMContentLoaded()
 		appVer = "v." + man.version;
 	document.querySelector('#appName').textContent = appName;
 	document.querySelector('#appVer').textContent = appVer;
+	
+	document.querySelector('#colorScheme').addEventListener('change', ev=>{
+		setupColorScheme(ev.target.value);
+	});
 
 	getBackgroundStatus();
 	document.querySelector('#save').addEventListener('click', ev=>{
@@ -144,6 +166,66 @@ function onDOMContentLoaded()
 	document.querySelector('#toggle').onclick = function (){
 		browser.runtime.sendMessage({type: "toggle"});
 	};
+	document.querySelector('#clearLog').addEventListener('click', ev=>{
+		clearLog();
+	});
+
+	document.querySelector('#exportSettings').addEventListener('click', ev=>{
+		browser.runtime.sendMessage({type: "getSettings"})
+		.then(v=>{
+			if (v.error){
+				alert("Error on getSettings: " + v.error);
+			}
+			else {
+				const date2str = function(){
+					const f = n => ("0" + n).slice(-2);
+					let d = new Date();
+					return d.getFullYear() + f(d.getMonth() + 1) + f(d.getDate()) + "-" + f(d.getHours()) + f(d.getMinutes()) + f(d.getSeconds());
+				};
+				let man = browser.runtime.getManifest(), 
+					appName = man.name,
+					appVer = "v." + man.version;
+				v.app = appName + " " + appVer;
+				let settingsData = JSON.stringify(v);
+				let e = document.createElement("a");
+				e.href = URL.createObjectURL(new Blob([settingsData], {type:"application/json"}));
+				e.download = appName.toLowerCase().replace(/\s/g, "-") + "-" + date2str() + ".json";
+				e.click();
+			}
+		})
+		.catch(err=>{
+			alert("Error on sendMessage('getSettings'): " + err);
+		});
+	});
+
+	document.querySelector('#importSettings').addEventListener('click', ev=>{
+		let e = document.createElement("input");
+		e.type = "file";
+		e.accept = "application/json";
+		e.addEventListener("change", ev =>{
+			let file = ev.target?.files[0];
+			if (file){
+				const reader = new FileReader();
+				reader.addEventListener("load", ev =>{
+					try {
+						const v = JSON.parse(reader.result);
+						if (! v?.app?.startsWith(appName)){
+							throw Error("invalid settings data");
+						}
+						setupSettings(v);
+						applySettings();
+						log("Setting data successfully imported.");
+					}
+					catch (e){
+						const msg = e.name + ": " + e.message;
+						log(msg), alert(msg);
+					}
+				});
+				reader.readAsText(file);
+			}
+		});
+		e.click();
+	});
 
 	let e = document.querySelectorAll(".main, input, textarea, button, #log");
 	for (let i = 0 ; i < e.length ; i++){
@@ -156,10 +238,8 @@ function onDOMContentLoaded()
 			alert("Error on getSettings: " + v.error);
 		}
 		else {
-			document.querySelector('#enableAtStartup').checked = v.enableAtStartup;
-			document.querySelector('#printDebugInfo').checked = v.printDebugInfo;
-			document.querySelector('#appliedUrls').value = v.appliedUrls;
-			document.querySelector('#userAgent').value = v.userAgent;
+			setupSettings(v);
+			window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ev=> onPrefersColorSchemeDarkChange(ev));
 		}
 	})
 	.catch(err=>{
